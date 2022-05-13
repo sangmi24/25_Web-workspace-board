@@ -1,12 +1,13 @@
 package com.kh.board.model.service;
 
-import static com.kh.common.JDBCTemplate.close;
-import static com.kh.common.JDBCTemplate.getConnection;
+import static com.kh.common.JDBCTemplate.*;
+
 
 import java.sql.Connection;
 import java.util.ArrayList;
 
 import com.kh.board.model.dao.BoardDao;
+import com.kh.board.model.vo.Attachment;
 import com.kh.board.model.vo.Board;
 import com.kh.board.model.vo.Category;
 import com.kh.common.model.vo.PageInfo;
@@ -45,7 +46,90 @@ public class BoardService {
 		close(conn);
 		
 		return list;
+	
+	}
+	public int insertBoard(Board b, Attachment at) {
 		
+		// 일반게시글 추가 트랜잭션
+		// 트랜잭션 하나에 두개의 insert문을 넣어줄 예정
+		// 1. BOARD 테이블에 INSERT
+		// 2. 만약 첨부파일이 있는 경우 ATTACHMENT 테이블에 INSERT
+		// 3. 커밋/ 롤백 처리 (위 두개의 쿼리문이 성공했을 경우만 커밋/ 나머지는 롤백)
+        
+		Connection conn = getConnection();
+		//1. BOARD 테이블에 INSERT 시켜주는 DAO 호출
+		int result1 = new BoardDao().insertBoard(conn,b);
+		
+		// 미리 result2에 대해서 선언과 초기화
+		int result2 = 1;
+		
+		//2. 만약 첨부파일이 있는 경우 ATTACHMENT 테이블에 INSERT시켜부는 DAO호출
+		if(at != null) {
+		  result2 = new BoardDao().insertAttachment(conn,at);
+		}
+		
+		// 이 시점 기준으로 첨부파일이 없었지만 result1은 성공일 경우
+		// result2를 0으로 초기화했었다면 else블럭으로 빠져나갈것 (롤백처리)
+		//=> result2를 1로 초기화하기!!
+		
+		// 3. 커밋/ 롤백 처리 (위 두개의 쿼리문이 성공했을 경우만 커밋)
+		if(result1>0 && result2>0) { //성공 =>커밋
+			
+			commit(conn);			
+		}
+		else { //실패 =>롤백
+			
+			rollback(conn);
+		}
+		
+		//4. 자원반납
+		close(conn);
+		
+		//5.결과 반환
+		return result1*result2;
+		
+	}
+	
+	public int increaseCount(int boardNo) {
+		
+		Connection conn = getConnection();
+		
+		int result = new BoardDao().increaseCount(conn,boardNo);
+		
+		if(result>0) {
+			
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		
+		close(conn);
+		
+		return result;
+	}
+	
+	public Board selectBoard(int boardNo) {
+		
+		Connection conn =  getConnection();
+		
+		Board b = new BoardDao().selectBoard(conn,boardNo);
+		// 하나만 뽑기 때문에 Board b
+		
+		close(conn);
+		
+		return b;
+		
+	}
+	public Attachment selectAttachment(int boardNo) {
+		
+		Connection conn = getConnection();
+		
+		Attachment at = new BoardDao().selectAttachment(conn,boardNo);
+		
+		close(conn);
+		
+		return at;
 		
 		
 	}
@@ -53,6 +137,8 @@ public class BoardService {
 	
 	
 	
-	
-	
 }
+
+
+
+
