@@ -76,11 +76,12 @@
       <br>
 
       <div align="center">
-          <a href="" class="btn btn-secondary btn-sm">목록가기</a>
-
+          <a href="javascript:history.back()" class="btn btn-secondary btn-sm">목록가기</a>
+          <% if(loginUser != null && loginUser.getUserId().equals(b.getBoardWriter())) {%> 
           <!--로그인한 사용자가 글 작성자와 일치할 경우만 보여지게끔 -->
-          <a href="" class="btn btn-warning btn-sm">수정하기</a>
-          <a href="" class="btn btn-danger btn-sm">삭제하기</a>
+          <a href="<%= contextPath %>/updateForm.bo?bno=<%= b.getBoardNo() %>" class="btn btn-warning btn-sm">수정하기</a>
+          <a href="<%= contextPath %>/delete.bo?bno=<%= b.getBoardNo() %>" class="btn btn-danger btn-sm">삭제하기</a>
+          <% } %>
       </div>
 
       <br>
