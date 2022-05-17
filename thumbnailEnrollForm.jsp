@@ -96,8 +96,6 @@
 
           });
 
-
-
            function loadImg(inputFile, num) {
                // inputFile : 현재 변화가 생긴 input type="file" 요소 객체 자체
                // num : 몇번째 input type="file" 요소 객체인지 확인 후 

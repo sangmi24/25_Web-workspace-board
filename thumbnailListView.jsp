@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList, com.kh.board.model.vo.Board" %>    
+<%
+  ArrayList<Board> list = (ArrayList<Board>)request.getAttribute("list");
+%>    
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +15,7 @@
      background-color: black;
      color: white;
      width: 1000px;
-     height: 800px;
+     height: 100%;
      margin: auto;
      margin-top: 50px;
    }
@@ -53,53 +58,43 @@
 	    </div>
       <% } %>
     <div class="list-area">
-
-       <div class="thumbnail" align="center">
-         <img src="/jsp/resources/thumbnail_upfiles/xxxx/xxxx" width="200px" height="150px">
-         <p>
-           No.123 제목입니다. <br>
-           조회수 : 230
-         </p>
-       </div>
-       <div class="thumbnail" align="center">
-        <img src="/jsp/resources/thumbnail_upfiles/xxxx/xxxx" width="200px" height="150px">
-        <p>
-          No.123 제목입니다. <br>
-          조회수 : 230
-        </p>
-      </div>
-      <div class="thumbnail" align="center">
-        <img src="/jsp/resources/thumbnail_upfiles/xxxx/xxxx" width="200px" height="150px">
-        <p>
-          No.123 제목입니다. <br>
-          조회수 : 230
-        </p>
-      </div>
-      <div class="thumbnail" align="center">
-        <img src="/jsp/resources/thumbnail_upfiles/xxxx/xxxx" width="200px" height="150px">
-        <p>
-          No.123 제목입니다. <br>
-          조회수 : 230
-        </p>
-      </div>
-      <div class="thumbnail" align="center">
-        <img src="/jsp/resources/thumbnail_upfiles/xxxx/xxxx" width="200px" height="150px">
-        <p>
-          No.123 제목입니다. <br>
-          조회수 : 230
-        </p>
-      </div>
-      <div class="thumbnail" align="center">
-        <img src="/jsp/resources/thumbnail_upfiles/xxxx/xxxx" width="200px" height="150px">
-        <p>
-          No.123 제목입니다. <br>
-          조회수 : 230
-        </p>
-      </div>
-
+    
+       <%if(list != null) { %>
+          <% for(Board b : list)  {%>
+          <div class="thumbnail" align="center">
+              <input type="hidden" value="<%= b.getBoardNo() %>">
+		       <img src="<%= contextPath %>/<%= b.getTitleImg() %>" width="200px" height="150px">
+		       <p>
+		         No.<span><%= b.getBoardNo() %></span> <%= b.getBoardTitle() %> <br>
+		                 조회수 : <%= b.getCount() %>
+		       </p>
+          </div>
+          <% } %>
+       <% } else { %>
+                등록된 게시글이 없습니다. 
+       <% } %>    
     </div>
-
   </div>
+  
+  <script>
+    $(function(){
+    	
+    	$(".thumbnail").click(function(){
+    		
+    		var bno = $(this).children().eq(0).val();
+    		
+    		location.href="<%= contextPath %>/detail.th?bno="+ bno;
+    	});
+    	
+    });
+  
+  </script>
+  
+  
+  
+  
+  
+  
 
 </body>
 </html>

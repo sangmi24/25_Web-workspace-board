@@ -15,7 +15,7 @@ public class Board {
 	 private Date createDate; //CREATE_DATE DATE DEFAULT SYSDATE NOT NULL,
 	 private String status;// STATUS VARCHAR2(1) DEFAULT 'Y' CHECK (STATUS IN('Y', 'N')),
 	
-	
+	 private String titleImg; // 썸네일 경로를 포함한 수정명
 	// 생성자부
 	 public Board() {
 			super();
@@ -43,6 +43,8 @@ public class Board {
 		this.count = count;
 		this.createDate = createDate;
 	}
+	
+	
 	
 	// 메소드부
 	public int getBoardNo() {
@@ -98,6 +100,13 @@ public class Board {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	//썸네일 경로를 포함한 수정명에 대한 getter/setter
+	public String getTitleImg() {
+		return titleImg;
+	}
+	public void setTitleImg(String titleImg) {
+		this.titleImg = titleImg;
 	}
 	@Override
 	public String toString() {
